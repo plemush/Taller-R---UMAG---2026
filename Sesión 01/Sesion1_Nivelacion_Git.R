@@ -79,7 +79,7 @@ glimpse(encuesta)
 colSums(is.na(___))
 
 # Pregunta: ¿en qué columnas hay valores faltantes?
-# Mi respuesta:
+# Mi respuesta: horas_investigacion_sem, n_publicaciones, sat_financiamiento y sat_conectividad
 
 
 # 1.3  Limpiar `nivel`. Mira cuántas categorías distintas tiene con
