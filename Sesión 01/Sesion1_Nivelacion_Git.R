@@ -72,7 +72,7 @@ programas <- read_csv(here("data", "raw", "___"))
 glimpse(encuesta)
 
 # Pregunta: ¿cuántas filas y columnas tiene `encuesta`? ¿Qué tipo de dato tiene `nivel`?
-# Mi respuesta:
+# Mi respuesta: 150 filas y 12 columnas. Grados (magister o doctorado)
 
 
 # 1.2  Diagnóstico de faltantes. Cuenta los NA de cada columna.
