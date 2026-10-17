@@ -1,0 +1,392 @@
+---
+title: "Solucionario (docente) — Sesión 2: Programación funcional"
+subtitle: "Programa Análisis de Datos en R · Nivel Básico-Intermedio"
+lang: es
+format:
+  html:
+    toc: true
+    code-tools: true
+execute:
+  warning: false
+  message: false
+---
+
+Este documento contiene **una** solución posible para cada ejercicio de la guía del estudiante. El código
+está probado con R 4.3, dplyr 1.1.4, purrr 1.0.2 y tidyr 1.3.1 (requiere dplyr ≥ 1.1.0 por `.by` y
+purrr ≥ 1.0.0 por `list_rbind()`). Los datos son **simulados**.
+
+Supone el proyecto de RStudio de la sesión 1, con estos archivos nuevos:
+
+```
+curso-r-intermedio/
+├── data/raw/   (encuesta_limpia.csv, programas.csv, olas/encuesta_2022.csv … encuesta_2026.csv)
+├── R/          (funciones.R, analisis.R)
+└── outputs/    (figuras/)
+```
+
+En este solucionario las funciones se definen en los bloques de código; en el proyecto real van todas
+juntas en `R/funciones.R` y se cargan con `source(here("R", "funciones.R"))`.
+
+# Bloque 0 · Preparación
+
+```{r}
+library(tidyverse)
+library(here)
+# source(here("R", "funciones.R"))   # en tu proyecto real
+
+encuesta  <- read_csv(here("data", "raw", "encuesta_limpia.csv"), show_col_types = FALSE)
+programas <- read_csv(here("data", "raw", "programas.csv"), show_col_types = FALSE)
+glimpse(encuesta)
+```
+
+# Bloque 1 · Funciones propias
+
+## 1.1 Primera función
+
+```{r}
+error_estandar <- function(x, na.rm = TRUE) {
+  if (na.rm) x <- x[!is.na(x)]
+  sd(x) / sqrt(length(x))
+}
+
+error_estandar(c(2, 4, 4, 4, 5, 5, 7, 9))      # 0.7559289
+error_estandar(encuesta$sat_supervision)       # 0.0759
+```
+
+## 1.2 Coeficiente de variación
+
+```{r}
+coef_variacion <- function(x, na.rm = TRUE) {
+  sd(x, na.rm = na.rm) / mean(x, na.rm = na.rm) * 100
+}
+
+coef_variacion(c(10, 12, 14))                    # 16.67
+coef_variacion(encuesta$horas_investigacion_sem)
+```
+
+## 1.3 Validaciones
+
+```{r}
+error_estandar <- function(x, na.rm = TRUE) {
+  if (!is.numeric(x)) {
+    stop("`x` debe ser numérica, no ", class(x)[1], call. = FALSE)
+  }
+  if (na.rm) x <- x[!is.na(x)]
+  if (length(x) < 2) {
+    warning("Se necesitan al menos 2 valores; devuelvo NA", call. = FALSE)
+    return(NA_real_)
+  }
+  sd(x) / sqrt(length(x))
+}
+
+try(error_estandar(encuesta$nivel))
+error_estandar(5)
+```
+
+*Respuesta a la pregunta:* `stop()` detiene la función (no hay forma de continuar con una entrada que no
+es numérica); `warning()` avisa pero permite seguir devolviendo un `NA` razonable.
+
+## 1.4 Resumen numérico
+
+```{r}
+resumen_num <- function(x, na.rm = TRUE) {
+  tibble(
+    n     = sum(!is.na(x)),
+    media = mean(x, na.rm = na.rm),
+    de    = sd(x, na.rm = na.rm),
+    ee    = error_estandar(x, na.rm = na.rm)
+  )
+}
+
+resumen_num(encuesta$horas_investigacion_sem)
+```
+
+## 1.5 Función que envuelve dplyr
+
+```{r}
+resumir_por <- function(datos, grupo, variable) {
+  datos |>
+    group_by({{ grupo }}) |>
+    summarise(
+      n     = sum(!is.na({{ variable }})),
+      media = mean({{ variable }}, na.rm = TRUE),
+      ee    = error_estandar({{ variable }}),
+      .groups = "drop"
+    )
+}
+
+encuesta |> resumir_por(nivel, horas_investigacion_sem)
+encuesta |> resumir_por(programa_id, sat_supervision)
+```
+
+## 1.6 Argumento con valor por defecto, dentro de `across()`
+
+```{r}
+porcentaje_alto <- function(x, umbral = 4) {
+  x <- x[!is.na(x)]
+  mean(x >= umbral) * 100
+}
+
+porcentaje_alto(c(5, 4, 3, NA, 2))                 # 50
+encuesta |>
+  summarise(across(starts_with("sat_"), porcentaje_alto))
+encuesta |>
+  summarise(across(starts_with("sat_"), \(x) porcentaje_alto(x, umbral = 5)))
+```
+
+*Respuesta:* la dimensión con mayor porcentaje de puntajes altos (≥ 4) es la que tiene el valor más alto en
+la primera tabla (biblioteca y supervisión, en estos datos).
+
+## 1.7 Git
+
+```
+git add R/funciones.R
+git commit -m "Agrega funciones de resumen y validación"
+git log --oneline
+```
+
+# Bloque 2 · Iteración con purrr
+
+## 2.1 `map_dbl()`
+
+```{r}
+sat <- encuesta |> select(starts_with("sat_"))
+map_dbl(sat, \(x) mean(x, na.rm = TRUE))
+```
+
+## 2.2 Tus funciones dentro de `map()`
+
+```{r}
+map_dbl(sat, error_estandar)
+
+sat |>
+  map(resumen_num) |>
+  list_rbind(names_to = "dimension")
+```
+
+## 2.3 Variantes tipadas
+
+```{r}
+map_lgl(encuesta, is.numeric)
+
+conteo_na <- map_int(encuesta, \(x) sum(is.na(x)))
+keep(conteo_na, \(n) n > 0)
+```
+
+*Respuesta:* faltan 6 valores en cada una de cuatro columnas: `horas_investigacion_sem`, `n_publicaciones`,
+`sat_financiamiento` y `sat_conectividad`.
+
+## 2.4 `map2_dbl()`
+
+```{r}
+pares <- tibble(
+  x = c("horas_investigacion_sem", "horas_investigacion_sem", "sat_supervision"),
+  y = c("n_publicaciones", "sat_supervision", "sat_infraestructura")
+)
+pares$r <- map2_dbl(
+  pares$x, pares$y,
+  \(a, b) cor(encuesta[[a]], encuesta[[b]], use = "complete.obs")
+)
+pares
+```
+
+## 2.5 Leer muchos archivos
+
+```{r}
+archivos <- list.files(here("data", "raw", "olas"), pattern = "\\.csv$", full.names = TRUE)
+archivos
+
+olas_crudas <- archivos |>
+  set_names(basename) |>
+  map(read_csv, show_col_types = FALSE)
+
+map_int(olas_crudas, ncol)
+map_int(olas_crudas, nrow)
+names(olas_crudas[["encuesta_2025.csv"]])
+```
+
+*Respuesta:* `encuesta_2025.csv` tiene **1 columna**: el archivo usa `;` como separador (y `read_csv()` espera
+comas), típico de una exportación de Excel en español.
+
+## 2.6 Un lector robusto
+
+```{r}
+leer_ola <- function(ruta) {
+  d <- read_csv(ruta, show_col_types = FALSE)
+  if (ncol(d) == 1) d <- read_csv2(ruta, show_col_types = FALSE)
+  d
+}
+
+olas <- archivos |> set_names(basename) |> map(leer_ola)
+map_int(olas, ncol)
+
+todas <- olas |> list_rbind(names_to = "archivo")
+dim(todas)
+count(todas, archivo)
+```
+
+## 2.7 `safely()`
+
+```{r}
+resumir_ola <- function(d) {
+  d |> summarise(n = n(), sup = mean(sat_supervision, na.rm = TRUE))
+}
+
+res <- olas_crudas |> map(safely(resumir_ola))
+map_lgl(res, \(r) !is.null(r$error))
+conditionMessage(res[["encuesta_2025.csv"]]$error)
+```
+
+*Respuesta:* falla solo `encuesta_2025.csv`, con «object 'sat_supervision' not found»: como se leyó mal, la
+columna no existe. Con `possibly(..., otherwise = NULL)` la iteración habría terminado sin error, pero sin
+la fila de 2025.
+
+# Bloque 3 · Automatizar un análisis
+
+## 3.1 De cinco archivos a una tabla
+
+```{r}
+datos_olas <- archivos |>
+  set_names(basename) |>
+  map(leer_ola) |>
+  list_rbind(names_to = "archivo")
+
+nrow(datos_olas)
+count(datos_olas, anio)
+```
+
+## 3.2 Tendencia anual
+
+```{r}
+tendencia <- datos_olas |>
+  summarise(
+    n = n(),
+    across(starts_with("sat_"), \(x) mean(x, na.rm = TRUE)),
+    .by = anio
+  ) |>
+  arrange(anio)
+tendencia |> mutate(across(starts_with("sat_"), \(x) round(x, 2)))
+```
+
+*Respuesta:* la dimensión que más cambia es `sat_conectividad`, que sube de 2.96 en 2022 a 3.63 en 2026
+(+0.67). Las demás cambian mucho menos.
+
+## 3.3 Un modelo por área
+
+```{r}
+datos_prog <- datos_olas |> left_join(programas, by = "programa_id")
+
+modelos <- datos_prog |>
+  nest(.by = area) |>
+  mutate(
+    modelo    = map(data, \(d) lm(sat_conectividad ~ anio, data = d)),
+    pendiente = map_dbl(modelo, \(m) coef(m)[["anio"]]),
+    r2        = map_dbl(modelo, \(m) summary(m)$r.squared)
+  )
+modelos |> select(area, pendiente, r2) |> mutate(across(where(is.numeric), \(x) round(x, 3)))
+```
+
+*Interpretación:* la pendiente es el cambio medio anual en el puntaje de conectividad (escala 1–5). Las tres
+áreas mejoran; la mayor pendiente es la de Ciencias Naturales (≈ 0.27 puntos por año), seguida de Ciencias
+Sociales (≈ 0.15) e Ingeniería (≈ 0.11). Los R² son bajos (entre 0.02 y 0.10) porque hay mucha variación
+entre personas dentro de cada año; es un buen momento para recordar que la pendiente describe la tendencia
+media, no a cada persona.
+
+## 3.4 Figuras y tablas por área
+
+```{r}
+graficar_tendencia <- function(d, titulo) {
+  d |>
+    summarise(media = mean(sat_conectividad, na.rm = TRUE), .by = anio) |>
+    ggplot(aes(anio, media)) +
+    geom_line(color = "#065A82") +
+    geom_point(color = "#065A82", size = 2) +
+    scale_y_continuous(limits = c(1, 5)) +
+    labs(title = titulo, x = NULL, y = "Satisfacción con conectividad (1–5)")
+}
+
+dir.create(here("outputs", "figuras"), recursive = TRUE, showWarnings = FALSE)
+
+por_area <- datos_prog |>
+  nest(.by = area) |>
+  mutate(
+    grafico = map2(data, area, graficar_tendencia),
+    ruta    = here("outputs", "figuras", paste0("conectividad_", make.names(area), ".png"))
+  )
+
+walk2(por_area$grafico, por_area$ruta,
+      \(g, r) ggsave(r, g, width = 6, height = 4, dpi = 150))
+
+list.files(here("outputs", "figuras"))
+```
+
+```{r}
+rutas_csv <- here("outputs", paste0("tendencia_", make.names(por_area$area), ".csv"))
+tablas <- map(por_area$data, \(d) {
+  d |>
+    summarise(across(starts_with("sat_"), \(x) mean(x, na.rm = TRUE)), .by = anio) |>
+    arrange(anio)
+})
+walk2(tablas, rutas_csv, write_csv)
+basename(rutas_csv)
+```
+
+## 3.5 Git
+
+```
+git add R/funciones.R R/analisis.R
+git commit -m "Automatiza el análisis de las cinco olas"
+git log --oneline
+```
+
+(`outputs/` normalmente va en `.gitignore`, como se decidió en la sesión 1; si no, se puede versionar.)
+
+# Retos
+
+## Reto 1 · Todo en una función
+
+```{r}
+analizar_carpeta <- function(carpeta) {
+  list.files(carpeta, pattern = "\\.csv$", full.names = TRUE) |>
+    set_names(basename) |>
+    map(leer_ola) |>
+    list_rbind(names_to = "archivo") |>
+    summarise(
+      n = n(),
+      across(starts_with("sat_"), \(x) mean(x, na.rm = TRUE)),
+      .by = anio
+    ) |>
+    arrange(anio)
+}
+
+all.equal(analizar_carpeta(here("data", "raw", "olas")), tendencia)
+```
+
+## Reto 2 · `reduce()`
+
+```{r}
+tablas_prog <- list(
+  encuesta |> summarise(sat   = mean(sat_supervision, na.rm = TRUE), .by = programa_id),
+  encuesta |> summarise(horas = mean(horas_investigacion_sem, na.rm = TRUE), .by = programa_id),
+  encuesta |> summarise(pubs  = mean(n_publicaciones, na.rm = TRUE), .by = programa_id)
+)
+reduce(tablas_prog, \(x, y) left_join(x, y, by = "programa_id")) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+```
+
+## Reto 3 · Nombres como texto
+
+```{r}
+resumir_texto <- function(datos, variable) {
+  datos |>
+    summarise(
+      media = mean(.data[[variable]], na.rm = TRUE),
+      ee    = error_estandar(.data[[variable]])
+    )
+}
+
+names(sat) |>
+  set_names() |>
+  map(\(v) resumir_texto(encuesta, v)) |>
+  list_rbind(names_to = "dimension")
+```

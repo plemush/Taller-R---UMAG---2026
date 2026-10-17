@@ -1,0 +1,245 @@
+---
+title: "Solucionario (docente) — Sesión 1: Nivelación y Git"
+subtitle: "Programa Análisis de Datos en R · Nivel Básico-Intermedio"
+lang: es
+format:
+  html:
+    toc: true
+    code-tools: true
+execute:
+  warning: false
+  message: false
+---
+
+Este documento contiene **una** solución posible para cada ejercicio de la guía del estudiante.
+El código está probado con R 4.3, dplyr 1.1.4 y tidyr 1.3.1 (requiere dplyr ≥ 1.1.0 por el uso de
+`.by`, `pick()` y `.default`). Los datos son **simulados** (`encuesta_postgrado.csv`, 150 filas).
+
+Supone un proyecto de RStudio con esta estructura:
+
+```
+curso-r-intermedio/
+├── data/raw/   (encuesta_postgrado.csv, programas.csv)
+├── R/          (analisis.R)
+└── outputs/
+```
+
+# Parte 1 · Nivelación
+
+## 1.1 Importar y mirar los datos
+
+```{r}
+#| label: setup
+library(tidyverse)
+library(here)
+```
+
+```{r}
+encuesta  <- read_csv(here("data", "raw", "encuesta_postgrado.csv"))
+programas <- read_csv(here("data", "raw", "programas.csv"))
+glimpse(encuesta)
+```
+
+## 1.2 Diagnóstico de datos faltantes
+
+```{r}
+colSums(is.na(encuesta))
+```
+
+Con los archivos entregados hay 4 NA en `horas_investigacion_sem`, 7 en `n_publicaciones`, 6 en
+`sat_financiamiento` y 6 en `sat_conectividad`; el resto de las columnas no tiene faltantes.
+
+## 1.3 Limpiar la variable `nivel`
+
+`nivel` trae etiquetas inconsistentes (`"doctorado"`, `"Magíster "` con espacio final, etc.).
+
+```{r}
+count(encuesta, nivel)
+```
+
+```{r}
+encuesta <- encuesta |>
+  mutate(
+    nivel = str_to_lower(str_trim(nivel)),
+    nivel = case_when(
+      nivel == "doctorado" ~ "Doctorado",
+      nivel == "magíster"  ~ "Magíster",
+      .default = NA_character_
+    )
+  )
+count(encuesta, nivel)   # ahora deben quedar solo 2 categorías y ningún NA
+```
+
+## 1.4 Variables nuevas
+
+```{r}
+anio_actual <- 2026
+
+encuesta <- encuesta |>
+  mutate(
+    anios_en_programa = anio_actual - anio_ingreso,
+    perfil_publicaciones = case_when(
+      is.na(n_publicaciones) ~ NA_character_,
+      n_publicaciones == 0   ~ "Sin publicaciones",
+      n_publicaciones <= 2   ~ "1 a 2",
+      .default               = "3 o más"
+    )
+  )
+count(encuesta, perfil_publicaciones)
+```
+
+## 1.5 Resumen por grupo
+
+```{r}
+encuesta |>
+  group_by(nivel) |>
+  summarise(
+    n           = n(),
+    horas_media = mean(horas_investigacion_sem, na.rm = TRUE),
+    pubs_media  = mean(n_publicaciones, na.rm = TRUE)
+  )
+```
+
+## 1.6 Unir con la tabla de programas
+
+```{r}
+encuesta_prog <- encuesta |>
+  left_join(programas, by = "programa_id")
+
+encuesta_prog |>
+  group_by(area) |>
+  summarise(horas_media = mean(horas_investigacion_sem, na.rm = TRUE)) |>
+  arrange(desc(horas_media))
+```
+
+## 1.7 Filtrar casos
+
+```{r}
+encuesta_prog |>
+  filter(nivel == "Doctorado", n_publicaciones >= 3, horas_investigacion_sem > 30) |>
+  select(id, programa, n_publicaciones, horas_investigacion_sem)
+```
+
+# Parte 2 · dplyr avanzado
+
+## 2.1 `across()` dentro de `summarise()`
+
+```{r}
+# eligiendo columnas por nombre
+encuesta_prog |>
+  summarise(across(
+    c(horas_investigacion_sem, n_publicaciones, n_congresos),
+    \(x) mean(x, na.rm = TRUE)
+  ))
+
+# eligiendo con selectores: todas las numéricas, menos identificadores
+encuesta_prog |>
+  summarise(across(
+    where(is.numeric) & !c(id, anio_ingreso, anios_en_programa, duracion_semestres),
+    \(x) mean(x, na.rm = TRUE)
+  ))
+```
+
+## 2.2 Varias funciones a la vez, por grupo
+
+```{r}
+encuesta_prog |>
+  group_by(area) |>
+  summarise(across(
+    starts_with("sat_"),
+    list(media = \(x) mean(x, na.rm = TRUE), sd = \(x) sd(x, na.rm = TRUE)),
+    .names = "{.col}_{.fn}"
+  )) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+```
+
+## 2.3 `across()` dentro de `mutate()` (centrar puntajes)
+
+```{r}
+encuesta_prog <- encuesta_prog |>
+  mutate(across(starts_with("sat_"), \(x) x - mean(x, na.rm = TRUE), .names = "c_{.col}"))
+
+encuesta_prog |> select(id, sat_supervision, c_sat_supervision) |> head()
+```
+
+**Trampa frecuente:** si los nombres nuevos empezaran con `sat_` (por ejemplo `sat_supervision_c`),
+`starts_with("sat_")` los volvería a seleccionar en los pasos siguientes. Por eso se usa el prefijo `c_`.
+
+## 2.4 `pick()`: índice de satisfacción por fila
+
+```{r}
+encuesta_prog <- encuesta_prog |>
+  mutate(indice_satisfaccion = rowMeans(pick(starts_with("sat_")), na.rm = TRUE))
+
+encuesta_prog |> select(id, starts_with("sat_"), indice_satisfaccion) |> head()
+```
+
+## 2.5 `if_all()` e `if_any()` en `filter()`
+
+```{r}
+# Muy satisfechos en TODAS las dimensiones (los NA quedan fuera)
+encuesta_prog |>
+  filter(if_all(starts_with("sat_"), \(x) x >= 4)) |>
+  nrow()
+
+# Con ALGUNA dimensión sin respuesta
+encuesta_prog |>
+  filter(if_any(starts_with("sat_"), is.na)) |>
+  select(id, starts_with("sat_"))
+```
+
+## 2.6 Agrupar "al vuelo" con `.by`
+
+```{r}
+encuesta_prog |>
+  summarise(
+    n      = n(),
+    indice = mean(indice_satisfaccion),
+    .by    = c(area, nivel)
+  ) |>
+  arrange(area, nivel)
+
+# las 2 personas con mayor índice en cada área
+encuesta_prog |>
+  slice_max(indice_satisfaccion, n = 2, by = area, with_ties = FALSE) |>
+  select(id, area, indice_satisfaccion)
+```
+
+## 2.7 Reto: tabla área × dimensión
+
+```{r}
+resumen <- encuesta_prog |>
+  pivot_longer(
+    starts_with("sat_"),
+    names_to = "dimension", names_prefix = "sat_", values_to = "puntaje"
+  ) |>
+  summarise(media = mean(puntaje, na.rm = TRUE), .by = c(area, dimension)) |>
+  pivot_wider(names_from = dimension, values_from = media) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+
+resumen
+```
+
+# Parte 3 · Git — qué debería verse
+
+Estos comandos no se ejecutan aquí; sirven para que el docente compruebe el estado esperado de cada
+participante (en la terminal de RStudio, dentro de la carpeta del proyecto).
+
+```{bash}
+#| eval: false
+git status --short          # tras el primer commit: sin salida (árbol limpio)
+git log --oneline           # al final: al menos 4 commits
+git log --oneline --graph   # al final: se ve el commit de fusión (se usa --no-ff; sin esa opción,
+                            # si main no avanzó, Git hace "fast-forward" y el historial queda lineal)
+git check-ignore -v data/sensible/prueba.csv   # debe indicar la regla de .gitignore que lo excluye
+```
+
+Errores habituales para tener a mano:
+
+- **"Author identity unknown"** al hacer el primer commit: falta `git config --global user.name` / `user.email`.
+- **El archivo aparece como "untracked" aunque está en `.gitignore`:** la regla se escribió mal
+  (por ejemplo sin la `/` final en una carpeta) o el archivo ya había sido agregado antes con `git add`.
+- **La rama se llama `master` en vez de `main`:** `git branch -M main`.
+- **`git restore` "no hizo nada":** el cambio ya estaba en el *staging area*; usar `git restore --staged archivo`
+  primero.
+- **En RStudio sin pestaña Git:** el proyecto se creó antes de `git init`; reabrir el proyecto.
