@@ -72,14 +72,14 @@ programas <- read_csv(here("data", "raw", "___"))
 glimpse(encuesta)
 
 # Pregunta: ¿cuántas filas y columnas tiene `encuesta`? ¿Qué tipo de dato tiene `nivel`?
-# Mi respuesta:
+# Mi respuesta: 150 filas y 12 columnas. Grados (magister o doctorado)
 
 
 # 1.2  Diagnóstico de faltantes. Cuenta los NA de cada columna.
 colSums(is.na(___))
 
 # Pregunta: ¿en qué columnas hay valores faltantes?
-# Mi respuesta:
+# Mi respuesta: horas_investigacion_sem, n_publicaciones, sat_financiamiento y sat_conectividad
 
 
 # 1.3  Limpiar `nivel`. Mira cuántas categorías distintas tiene con
