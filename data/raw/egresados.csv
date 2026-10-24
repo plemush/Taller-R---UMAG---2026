@@ -1,0 +1,201 @@
+id,programa_id,nivel,area,horas_investigacion_sem,sat_supervision,beca,edad_ingreso,meses_titulacion
+1,P05,Magíster,Ingeniería,16,4,Sin beca,29,40
+2,P02,Doctorado,Ciencias Naturales,34,4,Con beca,36,53.6
+3,P05,Magíster,Ingeniería,21,4,Con beca,31,43.3
+4,P01,Magíster,Ciencias Naturales,16,5,Sin beca,25,41.4
+5,P03,Magíster,Ciencias Sociales,18,4,Sin beca,27,49.9
+6,P06,Doctorado,Ingeniería,24,4,Con beca,32,69.5
+7,P03,Magíster,Ciencias Sociales,30,3,Sin beca,34,37.4
+8,P05,Magíster,Ingeniería,19,4,Sin beca,29,38
+9,P06,Doctorado,Ingeniería,18,5,Con beca,24,85.8
+10,P03,Magíster,Ciencias Sociales,18,3,Sin beca,38,46
+11,P02,Doctorado,Ciencias Naturales,25,4,Con beca,23,64.9
+12,P01,Magíster,Ciencias Naturales,22,2,Sin beca,34,31.2
+13,P04,Doctorado,Ciencias Sociales,32,3,Con beca,36,63.6
+14,P02,Doctorado,Ciencias Naturales,25,3,Sin beca,33,69.1
+15,P02,Doctorado,Ciencias Naturales,35,4,Con beca,33,61
+16,P06,Doctorado,Ingeniería,19,NA,Con beca,34,74.3
+17,P02,Doctorado,Ciencias Naturales,22,2,Sin beca,26,66.5
+18,P03,Magíster,Ciencias Sociales,10,4,Sin beca,32,48.9
+19,P02,Doctorado,Ciencias Naturales,33,3,Con beca,24,61
+20,P05,Magíster,Ingeniería,16,5,Sin beca,27,43
+21,P03,Magíster,Ciencias Sociales,16,5,Sin beca,34,38.7
+22,P03,Magíster,Ciencias Sociales,15,4,Sin beca,27,50.5
+23,P03,Magíster,Ciencias Sociales,23,4,Con beca,30,38.8
+24,P02,Doctorado,Ciencias Naturales,36,3,Con beca,23,62.1
+25,P01,Magíster,Ciencias Naturales,14,3,Con beca,23,37.1
+26,P05,Magíster,Ingeniería,16,4,Con beca,23,28.3
+27,P05,Magíster,Ingeniería,20,4,Sin beca,36,32.4
+28,P03,Magíster,Ciencias Sociales,15,4,Sin beca,31,40.3
+29,P05,Magíster,Ingeniería,21,5,Sin beca,30,36.1
+30,P03,Magíster,Ciencias Sociales,15,3,Sin beca,23,35.6
+31,P06,Doctorado,Ingeniería,29,3,Con beca,36,61
+32,P04,Doctorado,Ciencias Sociales,20,4,Con beca,23,70.9
+33,P04,Doctorado,Ciencias Sociales,33,4,Con beca,31,46.9
+34,P03,Magíster,Ciencias Sociales,25,5,Con beca,30,36.8
+35,P06,Doctorado,Ingeniería,35,4,Con beca,36,49.8
+36,P04,Doctorado,Ciencias Sociales,29,2,Con beca,36,68.7
+37,P02,Doctorado,Ciencias Naturales,33,4,Con beca,34,60.2
+38,P03,Magíster,Ciencias Sociales,24,5,Con beca,31,38.5
+39,P05,Magíster,Ingeniería,24,3,Sin beca,31,34.3
+40,P03,Magíster,Ciencias Sociales,28,4,Con beca,28,45
+41,P01,Magíster,Ciencias Naturales,22,2,Sin beca,32,41.2
+42,P01,Magíster,Ciencias Naturales,22,2,Sin beca,38,46.3
+43,P03,Magíster,Ciencias Sociales,18,5,Sin beca,26,38.7
+44,P06,Doctorado,Ingeniería,38,3,Con beca,31,58.1
+45,P02,Doctorado,Ciencias Naturales,36,3,Con beca,31,53.4
+46,P02,Doctorado,Ciencias Naturales,24,4,Con beca,23,57.2
+47,P06,Doctorado,Ingeniería,39,3,Con beca,23,65.6
+48,P01,Magíster,Ciencias Naturales,29,3,Con beca,35,26.3
+49,P01,Magíster,Ciencias Naturales,23,4,Sin beca,32,39
+50,P04,Doctorado,Ciencias Sociales,35,3,Sin beca,38,58.6
+51,P01,Magíster,Ciencias Naturales,19,4,Con beca,32,18.2
+52,P01,Magíster,Ciencias Naturales,24,3,Con beca,36,38.7
+53,P01,Magíster,Ciencias Naturales,20,5,Sin beca,31,42.2
+54,P02,Doctorado,Ciencias Naturales,37,4,Sin beca,28,53.2
+55,P06,Doctorado,Ingeniería,32,5,Con beca,32,51.2
+56,P05,Magíster,Ingeniería,17,2,Con beca,30,45.2
+57,P05,Magíster,Ingeniería,14,4,Sin beca,29,43.3
+58,P05,Magíster,Ingeniería,17,5,Con beca,23,29.2
+59,P05,Magíster,Ingeniería,27,5,Con beca,32,32.5
+60,P06,Doctorado,Ingeniería,29,4,Sin beca,33,59.8
+61,P03,Magíster,Ciencias Sociales,25,4,Sin beca,28,35.3
+62,P06,Doctorado,Ingeniería,32,4,Con beca,26,59.5
+63,P05,Magíster,Ingeniería,20,4,Sin beca,39,35.8
+64,P03,Magíster,Ciencias Sociales,30,3,Sin beca,27,37.7
+65,P06,Doctorado,Ingeniería,33,NA,Con beca,29,53.4
+66,P06,Doctorado,Ingeniería,32,2,Sin beca,31,67
+67,P06,Doctorado,Ingeniería,28,5,Sin beca,34,63
+68,P04,Doctorado,Ciencias Sociales,32,2,Sin beca,37,69.2
+69,P05,Magíster,Ingeniería,25,4,Sin beca,30,36
+70,P01,Magíster,Ciencias Naturales,11,4,Sin beca,29,34.6
+71,P06,Doctorado,Ingeniería,21,4,Sin beca,30,68.3
+72,P03,Magíster,Ciencias Sociales,21,4,Con beca,37,29.9
+73,P03,Magíster,Ciencias Sociales,18,5,Sin beca,29,31.2
+74,P03,Magíster,Ciencias Sociales,23,4,Sin beca,28,38.7
+75,P04,Doctorado,Ciencias Sociales,36,4,Con beca,28,60.4
+76,P05,Magíster,Ingeniería,10,4,Con beca,26,40.8
+77,P02,Doctorado,Ciencias Naturales,38,5,Con beca,33,50.4
+78,P06,Doctorado,Ingeniería,26,3,Con beca,31,66.2
+79,P01,Magíster,Ciencias Naturales,26,2,Sin beca,32,41.2
+80,P04,Doctorado,Ciencias Sociales,34,4,Con beca,26,65.8
+81,P06,Doctorado,Ingeniería,31,4,Con beca,36,58.1
+82,P06,Doctorado,Ingeniería,30,4,Con beca,40,50.8
+83,P05,Magíster,Ingeniería,18,4,Sin beca,30,37.7
+84,P01,Magíster,Ciencias Naturales,23,3,Con beca,23,39.5
+85,P05,Magíster,Ingeniería,19,3,Sin beca,35,37.8
+86,P03,Magíster,Ciencias Sociales,27,3,Con beca,27,40.4
+87,P04,Doctorado,Ciencias Sociales,27,3,Con beca,37,65.9
+88,P05,Magíster,Ingeniería,27,2,Con beca,32,41.4
+89,P05,Magíster,Ingeniería,20,4,Sin beca,31,45.1
+90,P06,Doctorado,Ingeniería,17,5,Sin beca,36,65.6
+91,P05,Magíster,Ingeniería,21,4,Sin beca,34,38.3
+92,P02,Doctorado,Ciencias Naturales,28,3,Sin beca,35,64.4
+93,P01,Magíster,Ciencias Naturales,21,4,Con beca,27,29.7
+94,P04,Doctorado,Ciencias Sociales,27,3,Sin beca,39,71.7
+95,P05,Magíster,Ingeniería,17,4,Sin beca,33,39.8
+96,P06,Doctorado,Ingeniería,18,3,Con beca,27,69.9
+97,P06,Doctorado,Ingeniería,34,4,Con beca,44,62.1
+98,P01,Magíster,Ciencias Naturales,16,3,Con beca,29,19.4
+99,P01,Magíster,Ciencias Naturales,18,3,Sin beca,32,35.5
+100,P01,Magíster,Ciencias Naturales,16,4,Sin beca,28,31.9
+101,P01,Magíster,Ciencias Naturales,16,4,Sin beca,32,43.1
+102,P02,Doctorado,Ciencias Naturales,32,4,Con beca,27,56.8
+103,P06,Doctorado,Ingeniería,29,5,Con beca,23,52.1
+104,P04,Doctorado,Ciencias Sociales,30,3,Sin beca,28,61.8
+105,P03,Magíster,Ciencias Sociales,20,2,Sin beca,29,47.3
+106,P01,Magíster,Ciencias Naturales,25,3,Sin beca,38,38.3
+107,P06,Doctorado,Ingeniería,29,3,Sin beca,25,76.5
+108,P02,Doctorado,Ciencias Naturales,30,4,Con beca,32,54.1
+109,P06,Doctorado,Ingeniería,24,3,Sin beca,35,72.7
+110,P01,Magíster,Ciencias Naturales,22,5,Con beca,29,17.9
+111,P05,Magíster,Ingeniería,10,3,Sin beca,32,49.4
+112,P01,Magíster,Ciencias Naturales,19,5,Sin beca,32,35.5
+113,P04,Doctorado,Ciencias Sociales,21,3,Con beca,34,87.8
+114,P03,Magíster,Ciencias Sociales,21,4,Con beca,32,27.9
+115,P03,Magíster,Ciencias Sociales,14,4,Sin beca,27,32.7
+116,P05,Magíster,Ingeniería,21,4,Sin beca,27,36
+117,P03,Magíster,Ciencias Sociales,26,2,Sin beca,33,45.9
+118,P01,Magíster,Ciencias Naturales,25,3,Sin beca,27,40.1
+119,P03,Magíster,Ciencias Sociales,18,4,Sin beca,38,48.2
+120,P05,Magíster,Ingeniería,18,3,Con beca,39,33.3
+121,P06,Doctorado,Ingeniería,41,4,Con beca,30,52.5
+122,P01,Magíster,Ciencias Naturales,17,3,Sin beca,28,39.1
+123,P01,Magíster,Ciencias Naturales,20,5,Sin beca,39,24.8
+124,P03,Magíster,Ciencias Sociales,13,4,Con beca,38,36.1
+125,P03,Magíster,Ciencias Sociales,19,4,Con beca,30,49
+126,P01,Magíster,Ciencias Naturales,14,4,Sin beca,36,37.1
+127,P06,Doctorado,Ingeniería,38,3,Sin beca,28,49.6
+128,P01,Magíster,Ciencias Naturales,20,4,Con beca,32,36.3
+129,P03,Magíster,Ciencias Sociales,21,4,Sin beca,30,36.1
+130,P01,Magíster,Ciencias Naturales,16,4,Sin beca,29,44.7
+131,P02,Doctorado,Ciencias Naturales,31,3,Con beca,36,61.1
+132,P06,Doctorado,Ingeniería,28,4,Con beca,30,50.5
+133,P02,Doctorado,Ciencias Naturales,43,5,Con beca,24,57.5
+134,P02,Doctorado,Ciencias Naturales,27,3,Con beca,26,53.3
+135,P06,Doctorado,Ingeniería,30,3,Sin beca,37,75.5
+136,P03,Magíster,Ciencias Sociales,19,3,Con beca,34,45.6
+137,P04,Doctorado,Ciencias Sociales,29,3,Sin beca,37,64.2
+138,P03,Magíster,Ciencias Sociales,19,5,Sin beca,32,42.4
+139,P02,Doctorado,Ciencias Naturales,32,2,Sin beca,35,59.9
+140,P01,Magíster,Ciencias Naturales,24,4,Sin beca,32,30.6
+141,P01,Magíster,Ciencias Naturales,19,3,Sin beca,23,37.9
+142,P01,Magíster,Ciencias Naturales,21,5,Con beca,33,29.4
+143,P05,Magíster,Ingeniería,17,4,Sin beca,41,51.9
+144,P05,Magíster,Ingeniería,23,2,Sin beca,36,36.8
+145,P06,Doctorado,Ingeniería,26,5,Con beca,33,55.8
+146,P05,Magíster,Ingeniería,20,3,Sin beca,33,38.1
+147,P06,Doctorado,Ingeniería,29,3,Con beca,32,58.8
+148,P03,Magíster,Ciencias Sociales,26,5,Sin beca,27,34.5
+149,P06,Doctorado,Ingeniería,37,2,Sin beca,34,71.9
+150,P03,Magíster,Ciencias Sociales,25,4,Sin beca,36,45.5
+151,P02,Doctorado,Ciencias Naturales,38,3,Sin beca,32,48.4
+152,P03,Magíster,Ciencias Sociales,11,5,Sin beca,24,42.4
+153,P05,Magíster,Ingeniería,25,3,Sin beca,31,42.9
+154,P05,Magíster,Ingeniería,19,4,Sin beca,29,48.5
+155,P03,Magíster,Ciencias Sociales,17,2,Sin beca,38,43.3
+156,P06,Doctorado,Ingeniería,28,4,Con beca,28,53.2
+157,P05,Magíster,Ingeniería,21,3,Con beca,40,32.4
+158,P01,Magíster,Ciencias Naturales,21,3,Sin beca,27,31.8
+159,P02,Doctorado,Ciencias Naturales,29,NA,Con beca,32,65.6
+160,P02,Doctorado,Ciencias Naturales,31,4,Sin beca,29,57.1
+161,P04,Doctorado,Ciencias Sociales,24,2,Con beca,25,71.7
+162,P05,Magíster,Ingeniería,17,4,Sin beca,31,37.2
+163,P01,Magíster,Ciencias Naturales,20,5,Sin beca,33,32.3
+164,P02,Doctorado,Ciencias Naturales,25,2,Con beca,44,68
+165,P05,Magíster,Ingeniería,11,3,Sin beca,40,41.5
+166,P03,Magíster,Ciencias Sociales,15,4,Con beca,28,36.7
+167,P02,Doctorado,Ciencias Naturales,36,3,Con beca,29,45.9
+168,P03,Magíster,Ciencias Sociales,28,NA,Sin beca,32,38.1
+169,P02,Doctorado,Ciencias Naturales,25,4,Sin beca,33,68.7
+170,P03,Magíster,Ciencias Sociales,18,NA,Sin beca,24,41.9
+171,P03,Magíster,Ciencias Sociales,21,3,Con beca,32,23.5
+172,P01,Magíster,Ciencias Naturales,23,4,Sin beca,37,39.1
+173,P05,Magíster,Ingeniería,26,4,Sin beca,31,41
+174,P02,Doctorado,Ciencias Naturales,29,4,Sin beca,25,60.8
+175,P03,Magíster,Ciencias Sociales,16,4,Sin beca,29,33.2
+176,P01,Magíster,Ciencias Naturales,17,3,Con beca,37,42.2
+177,P05,Magíster,Ingeniería,21,4,Con beca,36,26.9
+178,P06,Doctorado,Ingeniería,31,4,Con beca,23,50.8
+179,P06,Doctorado,Ingeniería,25,4,Con beca,25,51
+180,P01,Magíster,Ciencias Naturales,20,4,Sin beca,34,44.6
+181,P05,Magíster,Ingeniería,15,2,Sin beca,23,47.2
+182,P02,Doctorado,Ciencias Naturales,35,NA,Con beca,30,59.7
+183,P06,Doctorado,Ingeniería,22,5,Con beca,33,55
+184,P06,Doctorado,Ingeniería,36,4,Sin beca,27,55
+185,P05,Magíster,Ingeniería,22,3,Sin beca,33,33.2
+186,P03,Magíster,Ciencias Sociales,23,3,Con beca,33,36.7
+187,P05,Magíster,Ingeniería,20,3,Sin beca,32,42.6
+188,P01,Magíster,Ciencias Naturales,19,4,Sin beca,23,35.7
+189,P01,Magíster,Ciencias Naturales,14,4,Con beca,33,37.2
+190,P01,Magíster,Ciencias Naturales,13,4,Sin beca,29,36.4
+191,P02,Doctorado,Ciencias Naturales,28,4,Con beca,30,56.9
+192,P05,Magíster,Ingeniería,16,5,Sin beca,25,32.8
+193,P04,Doctorado,Ciencias Sociales,35,3,Con beca,30,68.4
+194,P01,Magíster,Ciencias Naturales,22,3,Sin beca,40,35.8
+195,P04,Doctorado,Ciencias Sociales,36,4,Con beca,29,46.6
+196,P06,Doctorado,Ingeniería,29,5,Con beca,32,53.3
+197,P01,Magíster,Ciencias Naturales,26,5,Sin beca,29,36
+198,P03,Magíster,Ciencias Sociales,22,5,Con beca,29,29.7
+199,P05,Magíster,Ingeniería,14,4,Con beca,38,35.6
+200,P06,Doctorado,Ingeniería,24,5,Sin beca,36,72.6
