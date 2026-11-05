@@ -1,0 +1,179 @@
+id_proyecto,programa_id,area,anio,n_investigadores,n_estudiantes,horas_equipo_sem,publicaciones_previas,duracion_meses,monto_mm
+1,P05,Ingeniería,2022,10,10,87,12,18,37.3
+2,P06,Ingeniería,2025,10,8,86,13,24,52.7
+3,P04,Ciencias Sociales,2022,2,2,10,10,24,9.8
+4,P04,Ciencias Sociales,2022,12,9,101,10,30,78.2
+5,P01,Ciencias Naturales,2025,7,5,50,10,30,24.3
+6,P05,Ingeniería,2022,5,3,38,6,30,17.1
+7,P03,Ciencias Sociales,2023,12,10,92,12,36,64.7
+8,P01,Ciencias Naturales,2023,6,3,43,10,18,16.9
+9,P06,Ingeniería,2021,9,9,79,5,18,39.1
+10,P02,Ciencias Naturales,2023,6,5,53,14,36,60.4
+11,P06,Ingeniería,2024,12,10,90,8,36,128.6
+12,P03,Ciencias Sociales,2023,3,1,24,8,24,13.7
+13,P04,Ciencias Sociales,2024,2,3,20,6,30,13.8
+14,P01,Ciencias Naturales,2023,12,10,97,6,18,62.5
+15,P03,Ciencias Sociales,2023,2,1,15,4,12,8.1
+16,P04,Ciencias Sociales,2024,5,4,35,7,24,26.5
+17,P06,Ingeniería,2021,12,10,101,10,24,54.7
+18,P06,Ingeniería,2022,7,5,56,15,24,55.6
+19,P03,Ciencias Sociales,2022,8,6,67,12,18,25.4
+20,P03,Ciencias Sociales,2021,6,5,51,14,18,18.2
+21,P06,Ingeniería,2022,9,8,76,15,36,31.9
+22,P05,Ingeniería,2024,7,6,61,15,12,30.6
+23,P01,Ciencias Naturales,2020,4,4,34,4,18,16.2
+24,P01,Ciencias Naturales,2023,7,6,56,10,12,19.7
+25,P02,Ciencias Naturales,2021,4,3,31,8,30,15.5
+26,P05,Ingeniería,2021,7,6,53,12,24,19.8
+27,P06,Ingeniería,2023,2,2,12,5,24,10.2
+28,P05,Ingeniería,2021,4,2,29,7,36,11.1
+29,P01,Ciencias Naturales,2024,6,6,52,6,18,21.1
+30,P04,Ciencias Sociales,2025,3,2,30,9,18,24.4
+31,P01,Ciencias Naturales,2023,3,1,27,9,12,5.3
+32,P04,Ciencias Sociales,2025,4,3,31,11,24,20.3
+33,P06,Ingeniería,2021,8,6,64,12,36,69
+34,P05,Ingeniería,2025,10,8,76,12,36,103.7
+35,P03,Ciencias Sociales,2022,6,5,53,9,36,18.5
+36,P05,Ingeniería,2020,10,9,86,8,36,75.9
+37,P03,Ciencias Sociales,2024,6,4,44,8,30,20.5
+38,P06,Ingeniería,2021,2,5,18,7,18,8.9
+39,P01,Ciencias Naturales,2023,12,9,94,16,36,59.7
+40,P06,Ingeniería,2024,9,6,75,12,18,29.5
+41,P04,Ciencias Sociales,2024,12,10,93,14,24,78.3
+42,P02,Ciencias Naturales,2024,8,6,61,8,18,18.6
+43,P05,Ingeniería,2021,6,4,48,11,30,20.8
+44,P02,Ciencias Naturales,2024,10,7,82,11,24,28.6
+45,P01,Ciencias Naturales,2022,3,1,23,7,18,18.2
+46,P05,Ingeniería,2022,2,2,10,6,12,6.7
+47,P02,Ciencias Naturales,2020,5,4,44,8,30,44.9
+48,P05,Ingeniería,2021,6,4,50,9,24,17.8
+49,P04,Ciencias Sociales,2023,3,3,25,4,36,12.5
+50,P01,Ciencias Naturales,2024,11,9,85,10,24,59
+51,P01,Ciencias Naturales,2023,6,5,42,10,30,25.1
+52,P05,Ingeniería,2025,4,4,43,11,18,12.5
+53,P03,Ciencias Sociales,2022,11,9,87,12,12,50.1
+54,P05,Ingeniería,2024,7,4,55,13,30,40.3
+55,P01,Ciencias Naturales,2024,5,3,37,13,24,18.4
+56,P02,Ciencias Naturales,2023,12,11,90,11,30,53.2
+57,P01,Ciencias Naturales,2022,12,10,91,9,18,82.8
+58,P03,Ciencias Sociales,2025,12,10,98,16,36,87.8
+59,P01,Ciencias Naturales,2024,11,7,87,12,24,54
+60,P03,Ciencias Sociales,2023,12,9,91,14,18,40.7
+61,P01,Ciencias Naturales,2022,3,3,20,5,18,12.2
+62,P02,Ciencias Naturales,2022,9,7,72,16,24,40.4
+63,P04,Ciencias Sociales,2024,9,10,79,3,36,47.6
+64,P02,Ciencias Naturales,2024,12,10,89,17,30,108.8
+65,P01,Ciencias Naturales,2023,4,3,26,8,18,17
+66,P05,Ingeniería,2022,8,7,59,11,18,24.3
+67,P04,Ciencias Sociales,2020,6,6,48,9,18,15.1
+68,P05,Ingeniería,2020,7,6,62,10,18,27.8
+69,P02,Ciencias Naturales,2024,10,9,72,6,30,41.6
+70,P02,Ciencias Naturales,2021,2,3,16,2,24,12.8
+71,P04,Ciencias Sociales,2025,5,3,46,11,18,18.5
+72,P03,Ciencias Sociales,2021,4,5,34,8,30,27.8
+73,P05,Ingeniería,2020,10,8,80,13,36,47.6
+74,P03,Ciencias Sociales,2025,4,4,41,8,30,12.4
+75,P05,Ingeniería,2023,7,6,52,6,30,25.2
+76,P04,Ciencias Sociales,2023,9,9,73,8,18,40.1
+77,P06,Ingeniería,2021,6,5,50,15,12,10.6
+78,P02,Ciencias Naturales,2023,11,9,86,15,36,102.4
+79,P05,Ingeniería,2020,11,9,92,18,18,53.7
+80,P06,Ingeniería,2020,7,4,56,4,12,28.7
+81,P03,Ciencias Sociales,2021,12,8,90,12,12,49.2
+82,P03,Ciencias Sociales,2022,5,4,36,9,36,37.8
+83,P05,Ingeniería,2023,9,7,65,14,36,77.5
+84,P05,Ingeniería,2024,11,9,90,14,30,49.7
+85,P02,Ciencias Naturales,2021,9,6,70,7,36,48.7
+86,P03,Ciencias Sociales,2020,12,10,90,17,12,30.5
+87,P03,Ciencias Sociales,2022,4,2,34,6,36,25.6
+88,P06,Ingeniería,2020,2,2,17,8,36,29.8
+89,P01,Ciencias Naturales,2024,4,3,34,11,30,11
+90,P04,Ciencias Sociales,2020,10,8,80,9,12,17.3
+91,P04,Ciencias Sociales,2025,9,7,63,12,30,36.2
+92,P04,Ciencias Sociales,2020,11,11,85,18,24,46.5
+93,P05,Ingeniería,2023,9,8,75,22,18,54.7
+94,P06,Ingeniería,2025,12,10,89,13,36,57.5
+95,P04,Ciencias Sociales,2020,12,8,97,13,36,34.1
+96,P05,Ingeniería,2025,9,9,71,13,12,25.6
+97,P02,Ciencias Naturales,2022,10,6,82,4,24,57.8
+98,P01,Ciencias Naturales,2024,12,11,98,17,12,41.8
+99,P03,Ciencias Sociales,2025,12,10,91,14,24,48
+100,P01,Ciencias Naturales,2024,8,6,56,9,12,20.1
+101,P03,Ciencias Sociales,2022,4,3,31,12,18,12.7
+102,P04,Ciencias Sociales,2025,4,4,30,12,18,16.2
+103,P01,Ciencias Naturales,2021,11,8,94,10,18,42.8
+104,P05,Ingeniería,2025,4,3,37,7,24,12.3
+105,P02,Ciencias Naturales,2024,9,7,63,11,36,51.6
+106,P05,Ingeniería,2022,12,10,91,13,30,61
+107,P01,Ciencias Naturales,2024,10,8,82,15,12,35.3
+108,P05,Ingeniería,2024,8,5,73,10,24,48.7
+109,P05,Ingeniería,2022,10,9,82,9,24,38.9
+110,P04,Ciencias Sociales,2023,4,2,31,11,18,21
+111,P06,Ingeniería,2024,3,3,27,6,18,9.4
+112,P05,Ingeniería,2022,12,10,95,13,12,49
+113,P04,Ciencias Sociales,2023,5,4,35,10,30,23.1
+114,P05,Ingeniería,2024,10,7,78,15,18,68.9
+115,P03,Ciencias Sociales,2024,7,4,62,18,36,33
+116,P01,Ciencias Naturales,2024,7,5,55,8,30,30.7
+117,P03,Ciencias Sociales,2024,10,8,86,10,24,29.2
+118,P01,Ciencias Naturales,2023,2,2,14,9,24,12.6
+119,P02,Ciencias Naturales,2020,10,9,83,11,36,48.2
+120,P02,Ciencias Naturales,2025,2,1,30,10,30,14.1
+121,P06,Ingeniería,2024,6,4,41,5,12,7.1
+122,P05,Ingeniería,2022,10,9,79,9,36,55.6
+123,P02,Ciencias Naturales,2024,6,6,46,12,36,46.1
+124,P05,Ingeniería,2022,8,7,64,10,24,59.3
+125,P02,Ciencias Naturales,2023,2,2,23,7,30,12.5
+126,P06,Ingeniería,2024,7,4,57,14,24,40.9
+127,P01,Ciencias Naturales,2022,7,5,51,10,30,34.9
+128,P03,Ciencias Sociales,2025,9,8,65,12,36,65
+129,P03,Ciencias Sociales,2020,7,6,58,12,36,57.2
+130,P05,Ingeniería,2020,11,9,92,15,18,52.4
+131,P04,Ciencias Sociales,2021,5,4,36,16,12,13
+132,P05,Ingeniería,2021,3,2,19,7,12,13.2
+133,P05,Ingeniería,2021,12,11,99,11,24,73.9
+134,P03,Ciencias Sociales,2024,8,7,68,15,12,23.1
+135,P03,Ciencias Sociales,2021,3,2,22,9,30,19.3
+136,P05,Ingeniería,2024,2,1,18,8,24,15.5
+137,P06,Ingeniería,2021,10,9,79,13,30,80.2
+138,P04,Ciencias Sociales,2020,9,6,74,14,12,30.1
+139,P04,Ciencias Sociales,2024,8,6,68,11,24,46.4
+140,P01,Ciencias Naturales,2021,8,6,68,12,36,27.6
+141,P01,Ciencias Naturales,2020,12,8,101,15,18,55.2
+142,P06,Ingeniería,2021,10,9,86,14,30,73.6
+143,P03,Ciencias Sociales,2020,8,6,69,10,36,46.7
+144,P05,Ingeniería,2024,6,5,44,6,18,15
+145,P03,Ciencias Sociales,2024,2,2,16,6,18,10
+146,P06,Ingeniería,2023,8,5,67,15,30,46.9
+147,P05,Ingeniería,2023,9,7,74,11,12,28.1
+148,P03,Ciencias Sociales,2025,9,7,73,10,36,30.7
+149,P04,Ciencias Sociales,2024,7,6,60,12,30,28.4
+150,P01,Ciencias Naturales,2020,3,1,21,9,30,13.4
+151,P03,Ciencias Sociales,2025,2,1,18,10,30,13.9
+152,P02,Ciencias Naturales,2021,7,6,61,5,36,33
+153,P04,Ciencias Sociales,2022,11,8,92,10,36,63.9
+154,P06,Ingeniería,2020,9,7,83,10,30,83.5
+155,P01,Ciencias Naturales,2023,11,8,94,15,12,41.9
+156,P03,Ciencias Sociales,2020,5,3,37,9,18,11.9
+157,P01,Ciencias Naturales,2025,9,7,68,6,24,22.7
+158,P05,Ingeniería,2023,2,3,9,11,30,13
+159,P06,Ingeniería,2022,8,7,52,13,18,21.6
+160,P02,Ciencias Naturales,2020,6,6,49,5,18,20.9
+161,P01,Ciencias Naturales,2025,5,5,48,3,36,23.4
+162,P04,Ciencias Sociales,2022,8,6,61,9,12,12.7
+163,P02,Ciencias Naturales,2023,5,5,37,12,24,21.4
+164,P01,Ciencias Naturales,2024,5,3,43,9,18,10.7
+165,P01,Ciencias Naturales,2020,8,6,74,10,18,31.2
+166,P01,Ciencias Naturales,2022,11,10,90,7,24,47.3
+167,P01,Ciencias Naturales,2020,12,10,83,12,12,77.2
+168,P01,Ciencias Naturales,2021,6,5,52,9,12,20.3
+169,P03,Ciencias Sociales,2025,8,5,62,7,30,26.8
+170,P05,Ingeniería,2023,6,6,44,6,12,14.4
+171,P06,Ingeniería,2021,5,2,42,4,36,33.2
+172,P03,Ciencias Sociales,2023,11,9,86,12,36,74.2
+173,P01,Ciencias Naturales,2025,7,5,55,13,36,30.1
+174,P06,Ingeniería,2024,2,0,27,9,12,9.3
+175,P04,Ciencias Sociales,2020,10,9,86,14,36,39.3
+176,P02,Ciencias Naturales,2021,8,7,63,8,12,29.8
+177,P04,Ciencias Sociales,2022,12,10,102,10,24,110
+178,P03,Ciencias Sociales,2025,12,11,90,14,18,59.5
