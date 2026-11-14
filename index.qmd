@@ -1,0 +1,19 @@
+---
+title: "Informes de titulación por programa"
+---
+
+Un informe por programa, generado desde una sola plantilla (`informes/informe_programa.qmd`).
+
+```{r}
+#| echo: false
+#| output: asis
+library(tidyverse)
+library(here)
+programas <- read_csv(here("data", "raw", "programas.csv"))
+existen <- file.exists(here("docs", "informes", str_glue("informe_{programas$programa_id}.html")))
+programas |>
+  filter(existen) |>
+  mutate(linea = str_glue("- [{programa}](informes/informe_{programa_id}.html) ({area})")) |>
+  pull(linea) |>
+  cat(sep = "\n")
+```
