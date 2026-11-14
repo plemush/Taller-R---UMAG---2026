@@ -1,0 +1,444 @@
+---
+title: "Práctica — Sesión 7: Reportes reproducibles avanzados"
+subtitle: "Análisis de Datos en R · Nivel Básico-Intermedio · Duración: 60 minutos"
+lang: es
+format:
+  html:
+    toc: true
+execute:
+  eval: false
+---
+
+## Cómo trabajar esta guía
+
+Esta guía es **tu hoja de ruta**. Hoy no trabajas en un único script: escribes **archivos de tu proyecto**
+(`informes/informe_programa.qmd`, `_quarto.yml`, `R/render_lote.R`) y usas la **terminal** de RStudio para
+Quarto y Git. Los espacios marcados con `___` son lo que debes completar. Si te trabas más de 3 minutos en un
+paso, pasa al siguiente y vuelve después: el objetivo es que practiques el flujo completo, no que todo salga
+perfecto.
+
+| Bloque | Contenido | Tiempo |
+|---|---|---|
+| 0 | Preparación | 5 min |
+| 1 | Quarto: un informe reproducible | 15 min |
+| 2 | Parametrizar y renderizar por lote | 20 min |
+| 3 | Git y GitHub: remoto, rama, pull request y Pages | 15 min |
+| — | Cierre y commit | 5 min |
+
+**Datos** (todos **simulados**, no corresponden a personas reales): los mismos `titulacion.csv` (320 egresados
+de posgrado, con la variable `titulo_a_tiempo`) y `programas.csv` (los 6 programas) de la sesión anterior.
+
+**Archivos de apoyo** (vienen en el material de la sesión): `datos/titulacion.csv`, `datos/programas.csv`,
+`material/funciones_informe.R` e `material/index.qmd`.
+
+**Requisitos:** R ≥ 4.1, RStudio, Quarto (el que viene con RStudio reciente o el instalador de quarto.org;
+esta guía se probó con Quarto 1.11), el proyecto `curso-r-intermedio` con su repositorio de Git, los paquetes
+`tidyverse`, `here`, `broom` y `knitr`, y una cuenta de GitHub (si no tienes, hay una alternativa en el
+paso 3.4).
+
+---
+
+## Bloque 0 · Preparación (5 min)
+
+**0.1** Abre el proyecto `curso-r-intermedio` en RStudio. En la terminal, `git status` debería indicar que no
+hay cambios pendientes (tu `R/sesion6.R` ya tiene commit).
+
+**0.2** Comprueba que Quarto está disponible. En la terminal:
+
+```{bash}
+quarto --version
+```
+
+Si dice que el comando no se reconoce, reinicia RStudio; si persiste, reinstala Quarto desde quarto.org.
+
+**0.3** Copia los archivos de apoyo a tu proyecto: `titulacion.csv` y `programas.csv` a `data/raw/`,
+`funciones_informe.R` a `R/` e `index.qmd` a la raíz del proyecto. Luego crea la carpeta de informes y
+comprueba que todo está en su lugar. En la consola de R:
+
+```{r}
+library(here)
+dir.create(here("___"), showWarnings = FALSE)
+
+file.exists(here("data", "raw", "___"))
+file.exists(here("R", "funciones_informe.R"))
+file.exists(here("index.qmd"))
+```
+
+Las tres últimas líneas deben dar `TRUE`.
+
+---
+
+## Bloque 1 · Quarto: un informe reproducible (15 min)
+
+**1.1** Crea el archivo `informes/informe_programa.qmd` (en RStudio: *File > New File > Quarto Document*,
+borra todo su contenido y guárdalo en esa ruta). Pega este contenido y completa los `___`. Por ahora el informe
+es del programa **P03** escrito a mano; en el Bloque 2 lo parametrizamos.
+
+```{=html}
+<pre><code>---
+title: "Informe de titulación a tiempo"
+lang: es
+format:
+  html:
+    code-fold: ___
+    embed-resources: true
+execute:
+  echo: true
+---
+
+&#96;&#96;&#96;{r}
+#| label: setup
+#| include: ___
+library(tidyverse)
+library(here)
+library(knitr)
+source(here("R", "funciones_informe.R"))
+
+programas &lt;- read_csv(here("data", "raw", "programas.csv"))
+titulacion &lt;- read_csv(here("data", "raw", "titulacion.csv")) |&gt;
+  mutate(beca = factor(beca, levels = c("Sin beca", "Con beca")))
+
+prog &lt;- programas |&gt; filter(programa_id == "P03")
+d &lt;- titulacion |&gt; filter(programa_id == "P03")
+&#96;&#96;&#96;
+
+## &#96;r prog$programa&#96;
+
+**Área:** &#96;r prog$area&#96; · **Duración:** &#96;r prog$duracion_semestres&#96; semestres
+
+En este programa hay **&#96;r ___(d)&#96;** egresados y **&#96;r sum(d$titulo_a_tiempo)&#96;**
+(&#96;r pct(mean(d$titulo_a_tiempo))&#96;) se tituló dentro del plazo.
+El promedio general de la universidad es &#96;r pct(mean(titulacion$titulo_a_tiempo))&#96;.
+
+## Titulación según beca
+
+&#96;&#96;&#96;{r}
+#| label: ___-beca
+#| tbl-cap: "Egresados que se titularon a tiempo, según beca."
+d |&gt;
+  resumen_titulacion(beca) |&gt;
+  mutate(pct_a_tiempo = pct(pct_a_tiempo)) |&gt;
+  kable(col.names = c("Beca", "Egresados", "A tiempo", "% a tiempo"))
+&#96;&#96;&#96;
+
+La @___-beca compara a quienes tuvieron beca con quienes no.
+
+## Horas de investigación
+
+&#96;&#96;&#96;{r}
+#| label: fig-horas
+#| fig-cap: "Porcentaje que se tituló a tiempo según horas semanales y beca."
+#| fig-height: 3.6
+grafico_horas(d)
+&#96;&#96;&#96;
+
+La @fig-horas muestra cómo cambia el porcentaje de titulación con la dedicación semanal.</code></pre>
+```
+
+**1.2** Renderiza el informe: botón **Render** de RStudio, o en la terminal:
+
+```{bash}
+quarto render informes/informe_programa.qmd
+```
+
+Se crea `informes/informe_programa.html`. Ábrelo en el navegador: debes ver el texto con las cifras, la
+“Tabla 1” con su título, la “Figura 1” con su pie y el código plegado.
+
+*Pregunta:* ¿qué porcentaje de los egresados de P03 se tituló a tiempo según el informe, y qué línea del
+`.qmd` produce esa cifra? ¿Quedó escrita a mano en alguna parte?
+
+**1.3** Juega con las opciones. Cambia `code-fold` a `false`, o agrega `#| echo: false` al chunk de la
+figura, y vuelve a renderizar.
+
+*Pregunta:* ¿qué cambia en el HTML con `echo: false` en un chunk? ¿Y si lo pones en el bloque `execute` del
+YAML?
+
+---
+
+## Bloque 2 · Parametrizar y renderizar por lote (20 min)
+
+**2.1** Antes de parametrizar, mira las funciones que ya usa tu informe (`R/funciones_informe.R`). Pruébalas
+en la consola:
+
+```{r}
+library(tidyverse)
+library(here)
+source(here("R", "funciones_informe.R"))
+titulacion <- read_csv(here("data", "raw", "titulacion.csv"))
+
+pct(0.407)
+titulacion |> resumen_titulacion(___)
+```
+
+*Pregunta:* en `resumen_titulacion()` el argumento se usa como `{{ grupo }}`. ¿Por qué no basta con escribir
+`grupo`? (Pista: sesión 2.)
+
+**2.2** Parametriza el informe. Haz tres cambios en `informes/informe_programa.qmd`.
+
+*Cambio A.* En el YAML, justo después del bloque `execute` y antes de la línea `---` final, agrega los
+parámetros con sus valores por defecto:
+
+```yaml
+params:
+  programa_id: ___
+  incluir_modelo: ___
+```
+
+*Cambio B.* En el chunk `setup`, reemplaza las dos líneas que filtran por `"P03"` por estas tres:
+
+```r
+prog <- programas |> filter(programa_id == params$___)
+d <- titulacion |> filter(programa_id == params$___)
+stopifnot(nrow(prog) == 1, nrow(d) > 0)
+```
+
+*Cambio C.* Al final del documento agrega estas dos secciones: el modelo, que solo aparece si
+`incluir_modelo` es verdadero, y la sección de reproducibilidad.
+
+```{=html}
+<pre><code>&#96;&#96;&#96;{r}
+#| label: modelo
+#| eval: !expr params$___
+#| include: !expr params$___
+#| output: asis
+cat("## Modelo logístico\n\n")
+m &lt;- glm(titulo_a_tiempo ~ horas_investigacion_sem + beca, data = d, family = binomial)
+tidy(m, exponentiate = TRUE, conf.int = TRUE) |&gt;
+  filter(term != "(Intercept)") |&gt;
+  mutate(across(c(estimate, conf.low, conf.high), \(x) round(x, 2)),
+         p.value = round(p.value, 3)) |&gt;
+  select(Término = term, &#96;Odds ratio&#96; = estimate, &#96;IC inf.&#96; = conf.low,
+         &#96;IC sup.&#96; = conf.high, p = p.value) |&gt;
+  kable(format.args = list(decimal.mark = ",")) |&gt;
+  print()
+&#96;&#96;&#96;
+
+## Reproducibilidad
+
+Informe generado el &#96;r format(Sys.Date(), "%d-%m-%Y")&#96; con el commit
+&#96;r commit_actual()&#96;, a partir de los datos de &#96;titulacion.csv&#96; y los parámetros
+&#96;programa_id = "&#96;r params$programa_id&#96;"&#96; e &#96;incluir_modelo = &#96;r params$incluir_modelo&#96;&#96;.</code></pre>
+```
+
+El chunk del modelo usa `tidy()` de `broom`: agrega `library(broom)` en el chunk `setup`.
+
+**2.3** Crea el archivo `_quarto.yml` en la raíz del proyecto para que los informes se guarden en `docs/` y
+el código se ejecute desde la raíz:
+
+```yaml
+project:
+  output-dir: ___
+  render:
+    - index.qmd
+    - informes/informe_programa.qmd
+  execute-dir: ___
+lang: es
+format:
+  html:
+    toc: true
+    embed-resources: true
+execute:
+  warning: false
+  message: false
+```
+
+**2.4** Genera **un** informe para otro programa sin tocar el archivo. En la terminal (todo en **una sola
+línea**):
+
+```{bash}
+quarto render informes/informe_programa.qmd -P programa_id:___ -P incluir_modelo:false -M output-file:informe_P05.html
+```
+
+Abre `docs/informes/informe_P05.html`: debe ser del programa P05 y **no** tener la sección “Modelo logístico”.
+
+*Pregunta:* ¿qué pasaría si omites `-M output-file:…`? ¿Cómo cambia el informe si usas
+`-P incluir_modelo:true`?
+
+**2.5** Ahora los seis informes con un solo script. Guarda este código como `R/render_lote.R`, complétalo y
+ejecútalo con `source(here::here("R", "render_lote.R"))` (tarda alrededor de un minuto):
+
+```{r}
+library(tidyverse)
+library(here)
+
+programas <- read_csv(here("data", "raw", "programas.csv"))
+
+renderizar_informe <- function(programa_id, incluir_modelo = TRUE) {
+  args <- c("render", shQuote(here("informes", "informe_programa.qmd")),
+            "-P", str_glue("programa_id:{___}"),
+            "-P", str_glue("incluir_modelo:{tolower(incluir_modelo)}"),
+            "-M", str_glue("___:informe_{programa_id}.html"))
+  estado <- system2("quarto", args, stdout = FALSE, stderr = FALSE)
+  if (estado != 0) warning("Falló el informe de ", programa_id, call. = FALSE)
+  invisible(estado)
+}
+
+walk(programas$___, renderizar_informe)
+
+# Página de inicio con los enlaces a todos los informes
+system2("quarto", c("render", shQuote(here("index.qmd"))), stdout = FALSE, stderr = FALSE)
+```
+
+**2.6** Comprueba el resultado. En la consola:
+
+```{r}
+list.files(here("docs", "___"))
+```
+
+Debes ver seis archivos `informe_P0X.html`. Abre `docs/index.html` (lista los informes) y el informe de P02.
+
+*Pregunta:* según el informe del programa P02 (Doctorado en Ciencias Antárticas), ¿cuántos egresados hay y
+qué porcentaje se tituló a tiempo? ¿Qué commit aparece en su sección “Reproducibilidad”?
+
+---
+
+## Bloque 3 · Git y GitHub: remoto, rama, pull request y Pages (15 min)
+
+**3.1** Presenta tu identidad a Git (una sola vez por computador) y evita el error de ramas divergentes. En
+la terminal:
+
+```{bash}
+git config --global user.name "Tu Nombre"
+git config --global user.email "tu@correo.cl"
+git config --global pull.rebase ___
+```
+
+**3.2** Crea (o revisa) el archivo `.gitignore` en la raíz del proyecto, con estas líneas:
+
+```text
+.Rproj.user
+.Rhistory
+.RData
+.Renviron
+___
+```
+
+**3.3** Guarda el trabajo con un commit. En la terminal:
+
+```{bash}
+git ___ .
+git commit -m "Sesion 7: informes parametrizados"
+git status
+```
+
+*Pregunta:* ¿qué te dice `git status` ahora? ¿Qué carpeta nueva está dentro del commit y por qué la
+incluimos?
+
+**3.4** Conecta el proyecto a GitHub. En github.com: *New repository*, nombre `curso-r-intermedio`, **sin**
+README ni `.gitignore`. Copia la dirección que te muestra y, en la terminal, reemplaza `TU-USUARIO`:
+
+```{bash}
+git remote add ___ https://github.com/TU-USUARIO/curso-r-intermedio.git
+git branch -M main
+git push -u origin ___
+git remote -v
+```
+
+GitHub te pedirá autenticarte: usa un token de acceso personal (*Settings > Developer settings > Personal
+access tokens*; en R, `usethis::create_github_token()` abre la página y `gitcreds::gitcreds_set()` lo
+guarda). **El token es una contraseña: no lo escribas en ningún archivo del proyecto.**
+
+*Alternativa sin GitHub* (si no tienes cuenta o el token no funciona en 5 minutos): crea un remoto local, que
+funciona igual para practicar el ciclo. En la terminal, desde la carpeta del proyecto:
+
+```{bash}
+git init --bare --initial-branch=main ../curso-remoto.git
+git remote add origin ../curso-remoto.git
+git branch -M main
+git push -u origin main
+```
+
+**3.5** Trabaja en una rama y propón un cambio. Crea la rama:
+
+```{bash}
+git switch -c ___
+```
+
+Crea el archivo `README.md` en la raíz con este contenido:
+
+```markdown
+# Informes de titulación
+
+Un informe por programa, generado con Quarto desde una sola plantilla.
+
+## Cómo reproducirlo
+
+1. Abre el proyecto en RStudio.
+2. Ejecuta `source("R/render_lote.R")`.
+3. Los informes quedan en `docs/informes/`.
+```
+
+Sube la rama:
+
+```{bash}
+git add README.md
+git commit -m "Agrega README"
+git push -u origin agrega-readme
+```
+
+En GitHub aparecerá un aviso *Compare & pull request*: ábrelo, escribe una descripción breve y haz *Merge*.
+Luego, en la terminal, vuelve a `main`, trae los cambios y borra la rama:
+
+```{bash}
+git switch main
+git pull
+git branch -d agrega-readme
+```
+
+(Con el remoto local no hay pull request: une la rama con `git merge agrega-readme`, haz `git push` y borra
+la rama.)
+
+*Pregunta:* si una compañera sube un cambio a `main` mientras tú trabajabas y haces `git push`, Git lo
+rechaza. ¿Qué debes hacer y en qué orden?
+
+**3.6** Publica con GitHub Pages (solo con GitHub). En el repositorio: *Settings > Pages*; en *Source*,
+**Deploy from a branch**; rama `main`, carpeta `/docs`; *Save*. Tras uno o dos minutos, la página queda en
+`https://TU-USUARIO.github.io/curso-r-intermedio/`. **Recuerda:** lo que publicas es público; en cuentas
+gratuitas, Pages de un repositorio privado puede no estar disponible.
+
+---
+
+## Retos (si te sobra tiempo)
+
+**Reto 1 · Un tercer parámetro.** Agrega el parámetro numérico `horas_min` (valor por defecto `0`), que
+filtre a los egresados con `horas_investigacion_sem >= horas_min`. Genera el informe de P03 con
+`horas_min` igual a 20 y un nombre de archivo propio. ¿Cuántos egresados quedan?
+
+```{r}
+# (Escribe tu código aquí.)
+```
+
+**Reto 2 · Configuración compartida.** Mueve `code-fold: true` a `_quarto.yml` y elimina el bloque `format`
+del `.qmd` (que quede solo con el título y `execute`). Verifica que el informe sigue saliendo igual.
+
+```{r}
+# (Escribe tu código aquí.)
+```
+
+**Reto 3 · Provoca y resuelve un conflicto.** Clona tu repositorio en otra carpeta (`git clone URL ../copia`),
+cambia en las dos copias la primera línea de `README.md`, sube una, y trata de traer los cambios en la otra.
+Resuelve el conflicto y sube el resultado.
+
+```{bash}
+# (Escribe tus comandos aquí.)
+```
+
+---
+
+## Cierre (5 min)
+
+Revisa tu lista (cambia `[ ]` por `[x]`):
+
+- [ ] Mi informe `.qmd` tiene opciones de chunk, tabla y figura con referencia cruzada y cifras en el texto calculadas con código.
+- [ ] Sé parametrizar un informe y generar uno distinto con `-P` y `-M output-file`.
+- [ ] Mi script `R/render_lote.R` genera los seis informes y la página de inicio.
+- [ ] Mi proyecto está conectado a un remoto y sé usar `push`, `pull` y una rama.
+- [ ] No subí secretos ni datos confidenciales al repositorio.
+- [ ] `git log --oneline` muestra mis commits de hoy y `git status` está limpio.
+
+**Tarea para la próxima sesión (Taller integrador):**
+
+1. Termina los retos que te falten y deja el repositorio al día (`git status` limpio, `git push` hecho).
+2. Define una pregunta de tu propia investigación que puedas responder con datos, y anótala en una frase.
+3. Trae un conjunto de datos que puedas compartir (propio sin información sensible, o uno de los del curso) y
+   prepara una carpeta de proyecto para él.
