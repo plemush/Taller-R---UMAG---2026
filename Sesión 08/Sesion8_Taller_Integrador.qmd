@@ -1,0 +1,377 @@
+---
+title: "Práctica — Sesión 8: Taller integrador"
+subtitle: "Análisis de Datos en R · Nivel Básico-Intermedio · Duración: 60 minutos"
+lang: es
+format:
+  html:
+    toc: true
+execute:
+  eval: false
+---
+
+## Cómo trabajar esta guía
+
+Hoy recorres **el flujo completo** (pregunta, importar y validar, explorar, modelar, diagnosticar, comunicar y
+versionar) con **tu propio conjunto de datos**. Si no trajiste uno, usa `titulacion.csv`: la guía está escrita
+con ese ejemplo y los pasos son los mismos. Los espacios marcados con `___` son lo que debes completar. Si
+trabajas con tus datos, cambia los nombres de las variables por los tuyos. Si te trabas más de 3 minutos en un
+paso, pasa al siguiente y vuelve después: el objetivo es que practiques el flujo completo, no que todo salga
+perfecto.
+
+| Bloque | Contenido | Tiempo |
+|---|---|---|
+| 0 | Preparación | 5 min |
+| 1 | Pregunta y plan de análisis | 10 min |
+| 2 | Importar, validar y explorar | 15 min |
+| 3 | Modelar y diagnosticar | 15 min |
+| 4 | Informe Quarto y GitHub | 10 min |
+| — | Cierre con la rúbrica | 5 min |
+
+**Datos del ejemplo** (todos **simulados**, no corresponden a personas reales): `titulacion.csv` (320 egresados
+de posgrado, con la variable `titulo_a_tiempo`) y `programas.csv` (los 6 programas), los mismos de las sesiones 6
+y 7. **Pregunta del ejemplo:** ¿se asocia tener beca con titularse a tiempo, ajustando por horas de
+investigación, satisfacción con la supervisión, nivel y edad de ingreso?
+
+**Datos propios sensibles:** si contienen personas identificables, trabaja en local y **no los subas** a GitHub
+(agrega la carpeta `data/raw/` al `.gitignore`). Sube solo el código y los resultados agregados.
+
+**Requisitos:** R ≥ 4.1, RStudio, Quarto (esta guía se probó con Quarto 1.11), el proyecto `curso-r-intermedio`
+con su repositorio de Git de la sesión 7, y los paquetes `tidyverse`, `here`, `broom`, `knitr`, `car`, `pROC`
+y, para los retos, `rsample` y `lme4`.
+
+---
+
+## Bloque 0 · Preparación (5 min)
+
+**0.1** Abre el proyecto `curso-r-intermedio` en RStudio. En la terminal, `git status` debería indicar que no
+hay cambios pendientes.
+
+**0.2** Decide con qué datos trabajarás hoy.
+
+*Pregunta:* ¿qué conjunto de datos usarás (propio o `titulacion.csv`) y qué representa cada fila?
+
+**0.3** Deja el archivo de datos en `data/raw/` (copia `titulacion.csv` desde la carpeta `datos/` del material,
+o tu propio archivo). Crea las carpetas que faltan y comprueba que todo está en su lugar. En la consola de R:
+
+```{r}
+library(here)
+dir.create(here("data", "___"), showWarnings = FALSE)
+dir.create(here("___"), showWarnings = FALSE)
+
+file.exists(here("data", "raw", "___"))
+```
+
+La última línea debe dar `TRUE`.
+
+---
+
+## Bloque 1 · Pregunta y plan de análisis (10 min)
+
+**1.1** Crea el archivo `informes/plan_analisis.md` y copia en él la ficha. Complétala para tu proyecto, en
+media página. No hay respuestas únicas: lo importante es que cada campo quede escrito antes de modelar.
+
+````markdown
+# Ficha del plan de análisis
+
+Proyecto:
+Fecha:
+
+1. Pregunta (una sola frase):
+2. Población y unidad de análisis (¿quiénes? ¿qué es una fila?):
+3. Variable respuesta (nombre y tipo):
+4. Variable de interés y referencia (¿comparado con qué?):
+5. Covariables (y por qué cada una):
+6. Tipo de pregunta (descriptiva, asociativa, predictiva o causal):
+7. Modelo previsto:
+8. Diagnóstico y validación previstos:
+9. Límites esperados (datos observacionales, tamaño, faltantes, ética):
+10. Producto y fecha de entrega:
+````
+
+*Pregunta:* ¿qué tipo de pregunta es la tuya y qué modelo le corresponde según la tabla de la lámina "De la
+pregunta al tipo de análisis"?
+
+**1.2** Lee tu pregunta a una compañera (o escríbela en el chat) y pídele que identifique las cuatro piezas:
+quiénes, qué resultado, qué factor y comparado con qué. Si le falta una, reescribe la pregunta.
+
+---
+
+## Bloque 2 · Importar, validar y explorar (15 min)
+
+**2.1** Importa los datos con `read_csv()` y `here()`, y declara los factores con su nivel de referencia. En un
+script nuevo, `R/taller.R`:
+
+```{r}
+library(tidyverse)
+library(here)
+
+d <- read_csv(here("data", "raw", "___")) |>
+  mutate(beca  = factor(beca, levels = c("Sin beca", "Con beca")),
+         nivel = factor(nivel))
+```
+
+**2.2** Valida el archivo con los seis chequeos: dimensiones, tipos, faltantes, duplicados, rangos y categorías.
+
+```{r}
+dim(d)
+glimpse(d)
+colSums(is.na(d))
+anyDuplicated(d$___)
+summary(d |> select(horas_investigacion_sem, edad_ingreso, sat_supervision))
+count(d, programa_id, ___)
+```
+
+*Pregunta:* ¿encontraste faltantes, duplicados o valores imposibles? ¿Qué rango tienen las horas de
+investigación, la edad de ingreso y la satisfacción con la supervisión?
+
+**2.3** Explora la respuesta según el factor de interés y revisa si tienes casos suficientes para el modelo
+(una regla práctica, no una ley, es tener unos diez eventos por predictor):
+
+```{r}
+d |>
+  group_by(___) |>
+  summarise(n = n(), a_tiempo = sum(titulo_a_tiempo),
+            pct = round(100 * mean(titulo_a_tiempo), 1))
+
+n_eventos <- sum(d$___)
+n_eventos / 5
+```
+
+*Pregunta:* ¿qué porcentaje se tituló a tiempo con beca y sin beca? ¿Alcanzan los casos para un modelo con
+cinco predictores?
+
+**2.4** Grafica la respuesta según las horas de investigación, agrupadas en tramos:
+
+```{r}
+d <- d |>
+  mutate(tramo_horas = cut(horas_investigacion_sem, breaks = c(0, 15, 25, 35, ___), right = FALSE,
+                           labels = c("Menos de 15", "15 a 24", "25 a 34", "35 o más")))
+
+d |>
+  group_by(tramo_horas) |>
+  summarise(pct = mean(titulo_a_tiempo)) |>
+  ggplot(aes(tramo_horas, pct)) +
+  geom_col(fill = "#065A82") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "Horas semanales de investigación", y = "Se tituló a tiempo")
+```
+
+*Pregunta:* ¿qué patrón muestra el gráfico y por qué todavía no puedes concluir nada sobre la beca?
+
+**2.5** Guarda los datos ya validados en `data/processed/` (los crudos no se tocan):
+
+```{r}
+write_csv(d, here("data", "___", "titulacion_proc.csv"))
+```
+
+---
+
+## Bloque 3 · Modelar y diagnosticar (15 min)
+
+**3.1** Traduce tu ficha a un modelo. Con respuesta binaria, regresión logística:
+
+```{r}
+modelo <- glm(titulo_a_tiempo ~ beca + horas_investigacion_sem + sat_supervision + nivel + edad_ingreso,
+              data = d, family = ___)
+```
+
+**3.2** Obtén los odds ratios con su intervalo de confianza:
+
+```{r}
+library(broom)
+
+tidy(modelo, exponentiate = ___, conf.int = TRUE) |>
+  filter(term != "(Intercept)") |>
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+```
+
+*Pregunta:* interpreta el odds ratio de la beca con su intervalo, diciendo qué se compara y qué se mantiene
+constante. ¿Es una causa o una asociación?
+
+**3.3** Revisa la multicolinealidad con el factor de inflación de la varianza:
+
+```{r}
+car::___(modelo)
+```
+
+*Pregunta:* ¿hay señales de multicolinealidad? ¿Qué harías si algún valor superara 5?
+
+**3.4** Mide el rendimiento del modelo con el AUC en los mismos datos:
+
+```{r}
+library(pROC)
+
+p <- predict(modelo, type = "___")
+auc(roc(d$titulo_a_tiempo, p, quiet = TRUE))
+```
+
+*Pregunta:* ¿por qué el AUC calculado con los mismos datos del ajuste es optimista y qué harías para
+comprobarlo? (El Reto 1 lo resuelve.)
+
+**3.5** Escribe la frase de resultados, con las cifras tomadas del código:
+
+```{r}
+or_beca <- tidy(modelo, exponentiate = TRUE, conf.int = TRUE) |>
+  filter(term == "___")
+
+sprintf("OR = %.2f (IC 95%%: %.2f a %.2f)", or_beca$estimate, or_beca$conf.low, or_beca$conf.high)
+```
+
+*Pregunta:* escribe una frase de resultados que diga qué se comparó, cuánto, con qué incertidumbre, con qué
+ajuste y con qué límite.
+
+---
+
+## Bloque 4 · Informe Quarto y GitHub (10 min)
+
+**4.1** Crea `informes/informe_taller.qmd` y copia este esqueleto. Completa los `___`, escribe tus secciones
+de Pregunta, Métodos y Limitaciones con tus palabras y adapta los nombres de variables si usas tus datos.
+
+```{=html}
+<pre><code>---
+title: "¿Se asocia la beca con titularse a tiempo?"
+lang: es
+format:
+  html:
+    toc: true
+    embed-resources: ___
+execute:
+  echo: false
+  warning: false
+---
+
+&#96;&#96;&#96;{r}
+#| label: setup
+#| include: ___
+library(tidyverse)
+library(here)
+library(broom)
+library(knitr)
+
+d &lt;- read_csv(here("data", "raw", "titulacion.csv")) |&gt;
+  mutate(beca = factor(beca, levels = c("Sin beca", "Con beca")), nivel = factor(nivel))
+modelo &lt;- glm(titulo_a_tiempo ~ beca + horas_investigacion_sem + sat_supervision + nivel + edad_ingreso,
+              data = d, family = binomial)
+or &lt;- tidy(modelo, exponentiate = TRUE, conf.int = TRUE) |&gt; filter(term == "becaCon beca")
+pct &lt;- function(x) paste0(format(round(100 * x, 1), decimal.mark = ","), "%")
+n2 &lt;- function(x) format(round(x, 2), decimal.mark = ",")
+&#96;&#96;&#96;
+
+## Pregunta
+
+Escribe aquí tu pregunta con las cuatro piezas.
+
+## Datos
+
+Se analizaron **&#96;r nrow(d)&#96;** egresados; **&#96;r pct(mean(d$titulo_a_tiempo))&#96;** se tituló a tiempo.
+
+## Métodos
+
+Describe el modelo, las covariables y el diagnóstico.
+
+## Resultados
+
+&#96;&#96;&#96;{r}
+#| label: ___-or
+#| tbl-cap: "Odds ratios del modelo logístico (IC 95%)."
+tidy(modelo, exponentiate = TRUE, conf.int = TRUE) |&gt;
+  filter(term != "(Intercept)") |&gt;
+  mutate(across(where(is.numeric), \(x) round(x, 2))) |&gt;
+  select(term, estimate, conf.low, conf.high) |&gt;
+  kable(col.names = c("Término", "OR", "IC inferior", "IC superior"))
+&#96;&#96;&#96;
+
+La @___-or resume el modelo. El odds ratio de la beca fue **&#96;r n2(or$estimate)&#96;**
+(IC 95%: &#96;r n2(or$conf.low)&#96; a &#96;r n2(or$conf.high)&#96;).
+
+## Limitaciones
+
+Escribe aquí los límites de tu análisis.
+
+## Reproducibilidad
+
+Informe generado el &#96;r format(Sys.Date(), "%d-%m-%Y")&#96; con R &#96;r getRversion()&#96;.</code></pre>
+```
+
+**4.2** Agrega el informe a la lista `render:` de tu `_quarto.yml`, para que el HTML salga en `docs/informes/`
+(la carpeta que publica GitHub Pages). Luego renderízalo desde cero y ábrelo.
+
+```yaml
+  render:
+    - index.qmd
+    - informes/informe_programa.qmd
+    - informes/informe_taller.qmd
+```
+
+En la terminal:
+
+```{bash}
+quarto render informes/informe_taller.qmd
+```
+
+*Pregunta:* ¿qué cifras del texto salen del código y cuáles tendrías que revisar a mano si cambiaran los datos?
+
+**4.3** Guarda tu trabajo en el repositorio. En la terminal:
+
+```{bash}
+git status
+git ___ informes/ R/taller.R
+git commit -m "Agrega informe del taller integrador"
+git push
+```
+
+Si tus datos son sensibles, no agregues `data/raw/` al commit.
+
+---
+
+## Retos (si te sobra tiempo)
+
+**Reto 1 · Validación cruzada.** Con `rsample`, calcula el AUC del modelo con validación cruzada de 5 pliegues
+repetida 5 veces (`set.seed(2038)`) y compáralo con el AUC del ajuste. ¿Hay sobreajuste?
+
+```{r}
+# (Escribe tu código aquí.)
+```
+
+**Reto 2 · Efecto aleatorio por programa.** Con `lme4::glmer()`, agrega `(1 | programa_id)` al modelo y compara
+el odds ratio de la beca. Revisa con `isSingular()` si el modelo es singular e interpreta qué significa.
+
+```{r}
+# (Escribe tu código aquí.)
+```
+
+**Reto 3 · Informe parametrizado.** Agrega al YAML del informe el parámetro `area: "todas"`, filtra `d` cuando
+el parámetro no sea `"todas"` y genera el informe del área "Ciencias Sociales" con `-P` y `-M output-file`.
+¿Cuántos egresados incluye? (Pista: si filtras por programa, `nivel` queda con un solo valor y `glm()` falla;
+por eso aquí se filtra por área.)
+
+```{bash}
+# (Escribe tus comandos aquí.)
+```
+
+**Reto 4 · Una ruta avanzada (elige una).** (a) Curvas de Kaplan-Meier y modelo de Cox con `survival::lung`;
+(b) pronóstico de 24 meses con `forecast::auto.arima()` sobre `log(AirPassengers)`; (c) una aplicación Shiny
+mínima con un `selectInput` y un gráfico.
+
+```{r}
+# (Escribe tu código aquí.)
+```
+
+---
+
+## Cierre (5 min)
+
+Revisa tu lista con la rúbrica (cambia `[ ]` por `[x]`):
+
+- [ ] **Pregunta y plan:** mi ficha está completa, con las cuatro piezas, las covariables justificadas y el modelo elegido.
+- [ ] **Datos:** están validados y las correcciones están documentadas en código.
+- [ ] **Análisis:** el modelo es coherente con la pregunta y tiene diagnóstico y alguna forma de validación.
+- [ ] **Comunicación:** las cifras salen del código, la tabla tiene referencia y las limitaciones son honestas.
+- [ ] **Reproducibilidad:** el proyecto está ordenado, el informe se renderiza desde cero y el repositorio está al día.
+- [ ] No subí datos sensibles ni secretos al repositorio.
+
+**Tarea final del curso (entregable):**
+
+1. Termina tu informe Quarto con el flujo completo aplicado a tu conjunto de datos, dentro de tu repositorio.
+2. Revísalo con la rúbrica y renderízalo desde cero antes de entregarlo.
+3. Recibirás una retroalimentación breve e individual. El plazo de entrega se acordará con la dirección de postgrado.
